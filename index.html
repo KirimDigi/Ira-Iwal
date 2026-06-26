@@ -3967,8 +3967,11 @@
 
                       // Jika BUKAN editor, jalankan lock scroll
                       if (!isElementorEditor) {
-                        // Kunci scroll saat halaman dimuat HANYA jika tidak ada hash #cover di URL
-                        if (window.location.hash && window.location.hash.indexOf("cover") !== -1) {
+                        // Cek apakah undangan sudah pernah dibuka sebelumnya (via sessionStorage) atau posisi scroll sudah di bawah
+                        const isOpened = sessionStorage.getItem("undangan_terbuka") === "true" || window.scrollY > 50;
+
+                        // Jika sudah dibuka, atau ada hash #cover di URL, jangan kunci scroll
+                        if (isOpened || (window.location.hash && window.location.hash.indexOf("cover") !== -1)) {
                           document.body.style.overflow = "auto";
                           document.documentElement.style.overflow = "auto";
                           document.body.style.touchAction = "auto";
@@ -3984,6 +3987,9 @@
                         if (tombol) {
                           tombol.addEventListener("click", function (e) {
                             e.preventDefault(); // Mencegah hash masuk ke URL agar tidak ngelock saat refresh
+                            
+                            // Simpan status bahwa undangan sudah dibuka
+                            sessionStorage.setItem("undangan_terbuka", "true");
                             
                             // Buka kunci scroll
                             document.body.style.overflow = "auto";
